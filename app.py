@@ -29,9 +29,8 @@ def user_id():
                 "age": user["age"],
                 "team": user["team"]
             })
-    
-if __name__ == "__main__":
-    obj.run(debug=True)
+    else:
+            return jsonify({"Error" : f"User with {user_id} does not exist"})
 
 @obj.route('/v1/users/teams', methods=['GET'])       #To get users with same team code
 def user_team():
@@ -59,7 +58,7 @@ def user_team():
         return jsonify(same_code_team)
     
     else:
-        return jsonify({"Error": "No team with given code found"})
+        return jsonify({"Error": f"No team with {user_team} code found"})
     
 if __name__ == "__main__":
     obj.run(debug=True)

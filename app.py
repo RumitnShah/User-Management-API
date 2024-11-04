@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import json
+import uuid
 
 obj = Flask(__name__)
 
@@ -60,5 +61,48 @@ def user_team():
     else:
         return jsonify({"Error": f"No team with {user_team} code found"})
     
+@obj.route('/v1/users/new_users', methods=["POST"])      #To add new user
+def new_user():
+    data = request.get_json()
+
+    required_fields = ["name", "age", "team"]
+    
+    missing_fields = []
+    for field in required_fields:
+        if field not in data:
+            missing_fields.append(field)
+    
+    if missing_fields:
+        missing_fields_str = ", ".join(missing_fields)
+        return jsonify({
+            "error": f"Cannot create user as following attributes are missing: {missing_fields_str}"
+        })
+    
+    name = data["name"]
+    age = data["age"]
+    team = data["team"]
+    
+    user_id = str(uuid.uuid4())
+    new_user = {
+        "id": user_id,
+        "name": name,
+        "age": age,
+        "team": team
+    }
+
+    try:
+        with open('database.json', 'r') as file:
+            existing_data = json.load(file)
+        
+    except (json.JSONDecodeError, FileNotFoundError):
+        existing_data = {"users": []}
+    
+    existing_data["users"].append(new_user)
+        
+    with open('database.json', 'w') as file:
+        json.dump(existing_data, file, indent=4)
+
+    return "User added succesfully"
+
 if __name__ == "__main__":
     obj.run(debug=True)

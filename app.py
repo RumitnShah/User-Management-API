@@ -79,7 +79,7 @@ def new_user():
         })
     
     name = data["name"]
-    age = data["age"]
+    age = int(data["age"])
     team = data["team"]
     
     user_id = str(uuid.uuid4())
@@ -102,7 +102,39 @@ def new_user():
     with open('database.json', 'w') as file:
         json.dump(existing_data, file, indent=4)
 
-    return "User added succesfully"
+    return f"User added succesfully with id {user_id}"
+
+@obj.route('/v1/users/update_users', methods=["PUT"])      #To update user
+def update_user():
+    data = request.get_json()
+    user_id = request.args.get('id')
+
+    name = data.get("name")
+    age = data.get("age")
+    team = data.get("team")
+
+    with open('database.json', 'r') as file:
+        existing_data = json.load(file)
+    
+    users = existing_data["users"]
+
+    for user in users:
+        if user["id"] == user_id:
+            if "name" in data:
+                user["name"] = data["name"]
+            if "age" in data:
+                user["age"] = data["age"]
+            if "team" in data:
+                user["team"] = data["team"]
+            break
+
+    else:
+        return "User not found"
+
+    with open('database.json', 'w') as file:
+        json.dump(existing_data, file, indent=4)
+
+    return "User updated successfully"
 
 if __name__ == "__main__":
     obj.run(debug=True)

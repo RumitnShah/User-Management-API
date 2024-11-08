@@ -161,5 +161,39 @@ def update_user():
     # Return a success message
     return "User updated successfully"
 
+@obj.route('/v1/users/delete_users', methods=["DELETE"])
+def delete_user():
+    # Retrieve the user ID from the query parameters of the request
+    user_id = request.args.get("id")
+    
+    # Open file to read existing user data
+    with open("database.json", "r") as file:
+        existing_data = json.load(file)
+
+    # Access the list of users from the loaded data
+    users = existing_data["users"]
+
+    # Initialize an empty list to hold users that will remain after deletion
+    updated_users = []
+
+    # Iterate through the list of users to find users that do not match the user_id
+    for user in users:
+        if (user["id"] != user_id):  
+            updated_users.append(user) 
+
+    # Check if any users were removed by comparing lengths of lists
+    if len(updated_users) == len(users):
+        return "User Not Found"
+    
+    # Step 6: Update the existing data with the new list of users
+    existing_data["users"] = updated_users
+
+    # Step 7: Write the updated user data back to file
+    with open("database.json", "w") as file:
+        json.dump(existing_data, file, indent=4)  
+
+    # Step 8: Return a success message 
+    return f"User Successfully Deleted with id {user_id}"
+
 if __name__ == "__main__":
     obj.run(debug=True)

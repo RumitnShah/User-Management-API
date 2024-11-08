@@ -4,13 +4,13 @@ import uuid
 
 obj = Flask(__name__)
 
-@obj.route('/v1/users', methods=['GET'])     #To get all the users.
+@obj.route('/v1/users', methods=['GET'])     # Endpoint to retrieve all users from the database.
 def Users():
     with open('database.json', 'r') as file:
         data = json.load(file)
     return jsonify(data)
 
-@obj.route('/v1/users/ids', methods=['GET'])     # To get users with specific id only
+@obj.route('/v1/users/ids', methods=['GET'])     # Endpoint to retrieve a user by their ID.
 def user_id():
     user_id = request.args.get('id')
     
@@ -33,7 +33,7 @@ def user_id():
     else:
             return jsonify({"Error" : f"User with {user_id} does not exist"})
 
-@obj.route('/v1/users/teams', methods=['GET'])       #To get users with same team code
+@obj.route('/v1/users/teams', methods=['GET'])       # Endpoint to retrieve users by their team code.
 def user_team():
     user_team = request.args.get('team')
     
@@ -61,28 +61,39 @@ def user_team():
     else:
         return jsonify({"Error": f"No team with {user_team} code found"})
     
-@obj.route('/v1/users/new_users', methods=["POST"])      #To add new user
+@obj.route('/v1/users/new_users', methods=["POST"])      # Endpoint to create a new user.
 def new_user():
+    # Retrieve JSON data from the request
     data = request.get_json()
 
+    # Define the required fields for creating a new user
     required_fields = ["name", "age", "team"]
     
+    # Initialize a list to track any missing fields
     missing_fields = []
+    
+    # Check for each required field in the incoming data
     for field in required_fields:
         if field not in data:
-            missing_fields.append(field)
+            missing_fields.append(field)  # Add missing fields to the list
     
+    # If there are any missing fields, return an error message
     if missing_fields:
+        # Create a string of missing fields for the error message
         missing_fields_str = ", ".join(missing_fields)
         return jsonify({
             "error": f"Cannot create user as following attributes are missing: {missing_fields_str}"
         })
     
+    # Extract user details from the data (known as request body)
     name = data["name"]
     age = int(data["age"])
     team = data["team"]
     
+    # Generate a unique user ID using UUID
     user_id = str(uuid.uuid4())
+    
+    # Create a new user dictionary with the extracted details
     new_user = {
         "id": user_id,
         "name": name,
@@ -91,49 +102,63 @@ def new_user():
     }
 
     try:
+        # Attempt to read existing user data
         with open('database.json', 'r') as file:
-            existing_data = json.load(file)
+            existing_data = json.load(file)  # Load existing data
         
     except (json.JSONDecodeError, FileNotFoundError):
         existing_data = {"users": []}
     
+    # Append the new user to the existing users list
     existing_data["users"].append(new_user)
         
+    # Write the updated user data back 
     with open('database.json', 'w') as file:
         json.dump(existing_data, file, indent=4)
 
-    return f"User added succesfully with id {user_id}"
+    # Return a success message
+    return f"User added successfully with id {user_id}"
 
-@obj.route('/v1/users/update_users', methods=["PUT"])      #To update user
+@obj.route('/v1/users/update_users', methods=["PUT"])      # Endpoint to update an existing user.
 def update_user():
+    # Retrieve JSON data from the request
     data = request.get_json()
+    
+    # Get the user ID from the query parameters
     user_id = request.args.get('id')
 
+    # "get" used as then no need for all inputs necessary (known as request body)
     name = data.get("name")
     age = data.get("age")
     team = data.get("team")
 
+    # Open file to read existing user data
     with open('database.json', 'r') as file:
-        existing_data = json.load(file)
+        existing_data = json.load(file) 
     
+    # Access the list of users 
     users = existing_data["users"]
 
+    # Iterate through the list of users to find the one to update
     for user in users:
-        if user["id"] == user_id:
+        if user["id"] == user_id:  # Check if the current user's ID matches the provided user ID
+            # Update user details if provided in the incoming data
             if "name" in data:
-                user["name"] = data["name"]
+                user["name"] = data["name"]  
             if "age" in data:
                 user["age"] = data["age"]
             if "team" in data:
-                user["team"] = data["team"]
-            break
+                user["team"] = data["team"] 
+            break  
 
     else:
         return "User not found"
 
+    # Write the updated user data back to file
     with open('database.json', 'w') as file:
         json.dump(existing_data, file, indent=4)
 
+    # Return a success message
     return "User updated successfully"
 
 if __name__ == "__main__":

@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request
-import json
 import uuid
-
 import os
 from dotenv import load_dotenv
 import pyrebase
@@ -27,10 +25,7 @@ app = Flask(__name__)
 
 @app.route('/v1/users', methods=['GET'])     # Endpoint to retrieve all users from the database.
 def Users():
-    # with open('database.json', 'r') as file:
-    #     data = json.load(file)
-    # return jsonify(data)
-
+    
     # Fetch all data from the "Users" node in the Firebase Realtime Database
     users_data = database.child("Users").get()
 
@@ -56,22 +51,6 @@ def user_id():
     if not user_id:
         return jsonify({"error": "No user ID provided"})
 
-    # with open('database.json', 'r') as file:
-    #     data = json.load(file)
-
-    # users = data.get("users", [])
-    
-    # for user in users:
-    #     if user["id"] == user_id:
-    #         return jsonify({
-    #             "id": user["id"],
-    #             "name": user["name"],
-    #             "age": user["age"],
-    #             "team": user["team"]
-    #         })
-    # else:
-    #         return jsonify({"Error" : f"User with {user_id} does not exist"})
-
     # Fetch all data from the "Users" node in the Firebase Realtime Database
     users_data = database.child("Users").get()
 
@@ -92,27 +71,6 @@ def user_team():
     
     if not user_team:
         return jsonify({"error": "No user team provided"})
-
-    # with open('database.json', 'r') as file:
-    #     data = json.load(file)
-
-    # users = data.get("users", [])
-
-    # same_code_team = []
-
-    # for user in users:
-    #     if user["team"] == user_team:
-    #         same_code_team.append({
-    #                                     "id": user["id"],
-    #                                     "name": user["name"],
-    #                                     "age": user["age"],
-    #                                     "team": user["team"]
-    #                                 })
-    # if same_code_team:
-    #     return jsonify(same_code_team)
-    
-    # else:
-    #     return jsonify({"Error": f"No team with {user_team} code found"})
 
     # Fetch all user data
     users_data = database.child("Users").get()
@@ -172,21 +130,6 @@ def new_user():
         "team": team
     }
 
-    # try:
-    #     # Attempt to read existing user data
-    #     with open('database.json', 'r') as file:
-    #         existing_data = json.load(file)  # Load existing data
-        
-    # except (json.JSONDecodeError, FileNotFoundError):
-    #     existing_data = {"users": []}
-    
-    # # Append the new user to the existing users list
-    # existing_data["users"].append(new_user)
-        
-    # # Write the updated user data back 
-    # with open('database.json', 'w') as file:
-    #     json.dump(existing_data, file, indent=4)
-
     # Add user's data in the "Users" node with the given user_id
     database.child("Users").child(user_id).set(new_user)
 
@@ -206,32 +149,6 @@ def update_user():
     age = data.get("age")
     team = data.get("team")
 
-    # # Open file to read existing user data
-    # with open('database.json', 'r') as file:
-    #     existing_data = json.load(file) 
-    
-    # # Access the list of users 
-    # users = existing_data["users"]
-
-    # # Iterate through the list of users to find the one to update
-    # for user in users:
-    #     if user["id"] == user_id:  # Check if the current user's ID matches the provided user ID
-    #         # Update user details if provided in the incoming data
-    #         if "name" in data:
-    #             user["name"] = data["name"]  
-    #         if "age" in data:
-    #             user["age"] = data["age"]
-    #         if "team" in data:
-    #             user["team"] = data["team"] 
-    #         break  
-
-    # else:
-    #     return "User not found"
-
-    # # Write the updated user data back to file
-    # with open('database.json', 'w') as file:
-    #     json.dump(existing_data, file, indent=4)
-
     # Update user details if provided in the incoming data
     if "name" in data:
         database.child("Users").child(user_id).update({"name" : name})
@@ -247,35 +164,6 @@ def update_user():
 def delete_user():
     # Retrieve the user ID from the query parameters of the request
     user_id = request.args.get("id")
-    
-    # # Open file to read existing user data
-    # with open("database.json", "r") as file:
-    #     existing_data = json.load(file)
-
-    # # Access the list of users from the loaded data
-    # users = existing_data["users"]
-
-    # # Initialize an empty list to hold users that will remain after deletion
-    # updated_users = []
-
-    # # Iterate through the list of users to find users that do not match the user_id
-    # for user in users:
-    #     if (user["id"] != user_id):  
-    #         updated_users.append(user) 
-
-    # # Check if any users were removed by comparing lengths of lists
-    # if len(updated_users) == len(users):
-    #     return f"User Not Found with user id {user_id}"
-    
-    # # Update the existing data with the new list of users
-    # existing_data["users"] = updated_users
-
-    # # Write the updated user data back to file
-    # with open("database.json", "w") as file:
-    #     json.dump(existing_data, file, indent=4)  
-
-    # # Return a success message 
-    # return f"User Successfully Deleted with id {user_id}"
 
     # Fetch all user data from the "Users" node
     users_data = database.child("Users").get()

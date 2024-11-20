@@ -1,10 +1,26 @@
 from flask import Flask, jsonify, request
 import json
 import uuid
-from firebase_Config import firebaseConfig
-from pyrebase import pyrebase
 
-firebase = pyrebase.initialize_app(firebaseConfig)
+import os
+from dotenv import load_dotenv
+import pyrebase
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Retrieve Firebase configuration from environment variables
+firebase_config = {
+    "apiKey": os.getenv("apikey"),
+    "authDomain": os.getenv("authDomain"),
+    "databaseURL": os.getenv("databaseURL"),
+    "projectId": os.getenv("projectId"),
+    "storageBucket": os.getenv("storageBucket"),
+    "messagingSenderId": os.getenv("messagingSenderId"),
+    "appId": os.getenv("appId")
+}
+
+firebase = pyrebase.initialize_app(firebase_config)
 database = firebase.database()
 
 app = Flask(__name__)

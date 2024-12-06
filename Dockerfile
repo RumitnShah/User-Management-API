@@ -12,6 +12,9 @@ COPY . /app
 # Install the required dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Export environment variables from the .env file
+RUN export $(grep -v '^#' /app/.env | xargs)
+
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
 

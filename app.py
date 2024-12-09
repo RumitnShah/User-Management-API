@@ -4,6 +4,12 @@ import os
 from dotenv import load_dotenv
 import pyrebase
 
+if __name__ == "__main__":
+    # Get the PORT environment variable from Heroku, with a default of 5000 for local development
+    port = int(os.environ.get("PORT", 5000))
+    # Bind to all interfaces
+    app.run(host="0.0.0.0", port=port)
+
 # Load environment variables from the .env file
 load_dotenv()
 

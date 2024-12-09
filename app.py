@@ -4,12 +4,6 @@ import os
 from dotenv import load_dotenv
 import pyrebase
 
-if __name__ == "__main__":
-    # Get the PORT environment variable from Heroku, with a default of 5000 for local development
-    port = int(os.environ.get("PORT", 5000))
-    # Bind to all interfaces
-    app.run(host="0.0.0.0", port=port)
-
 # Load environment variables from the .env file
 load_dotenv()
 
@@ -185,6 +179,8 @@ def delete_user():
     else:
         return jsonify({"Error": f"User Not Found with user id {user_id}"})
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Get the PORT environment variable from Heroku, with a default of 5000 for local development
+    port = int(os.environ.get("PORT", 5000))
+    # Bind to all interfaces
+    app.run(host="0.0.0.0", port=port)

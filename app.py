@@ -160,9 +160,6 @@ def update_user():
             if "team" in team:
                 database.child("Users").child(user_id).update({"team" : team})   
 
-        else:
-            return jsonify({"Error": f"User Not Found with user id-{user_id}"})  
-
     # Return a success message
     return "User updated successfully"
 

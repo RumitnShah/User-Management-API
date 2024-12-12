@@ -134,24 +134,39 @@ def new_user():
 
 @app.route('/v1/users/update_users', methods=["GET"])      # Endpoint to update an existing user.
 def update_user():
-    # Retrieve data from the request
-    name = request.args.get('name')
-    age = request.args.get('age')
-    team = request.args.get('team')
     user_id = request.args.get('id')
+    # Fetch all user data from the "Users" node
+    users_data = database.child("Users").get()
 
-    # Update user details if provided in the incoming data
-    if "name" in name:
-        database.child("Users").child(user_id).update({"name" : name})
-    if "age" in age:
-        database.child("Users").child(user_id).update({"age" : age})
-    if "team" in team:
-        database.child("Users").child(user_id).update({"team" : team}) 
+    value = request.args.get('value')
+    # Retrieve data from the request
+    if value == "name":
+        name = request.args.get('name') 
+    elif value == "age":
+        age = request.args.get('age')
+    elif value == "team":
+        team = request.args.get('team')
+    else:
+        return jsonify({"Error": "Invalid value provided, need name, age or team"})
+
+    # Loop through users to find the matching user_id
+    for user in users_data.each():
+        if user.key() == user_id:
+            # If user is found, update the user details
+            if "name" in name:
+                database.child("Users").child(user_id).update({"name" : name})
+            if "age" in age:
+                database.child("Users").child(user_id).update({"age" : age})
+            if "team" in team:
+                database.child("Users").child(user_id).update({"team" : team})   
+
+        else:
+            return jsonify({"Error": f"User Not Found with user id-{user_id}"})  
 
     # Return a success message
     return "User updated successfully"
 
-@app.route('/v1/users/delete_users', methods=["GET"])
+@app.route('/v1/users/delete_users', methods=["GET"])   # Endpoint to delete a user by their ID.
 def delete_user():
     # Retrieve the user ID from the query parameters of the request
     user_id = request.args.get("id")

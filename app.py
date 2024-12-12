@@ -135,22 +135,19 @@ def new_user():
 @app.route('/v1/users/update_users', methods=["GET"])      # Endpoint to update an existing user.
 def update_user():
     user_id = request.args.get('id')
-    # Fetch all user data from the "Users" node
-    users_data = database.child("Users").get()
+    if not user_id:
+        return jsonify({"error": "Missing required parameter: 'id'"})
+    
+    user_data = database.child("Users").child(user_id).get().val()
+    if not user_data:
+        return jsonify({"error": "User not found"})
 
-    value = request.args.get('value')
-    # Retrieve data from the request
-    if value == "name":
-        name = request.args.get('name') 
-    elif value == "age":
-        age = request.args.get('age')
-    elif value == "team":
-        team = request.args.get('team')
-    else:
-        return jsonify({"Error": "Invalid value provided, need name, age or team"})
-
+    name = request.args.get('name') 
+    age = int(request.args.get('age'))
+    team = request.args.get('team')
+    
     # Loop through users to find the matching user_id
-    for user in users_data.each():
+    for user in user_data.each():
         if user.key() == user_id:
             # If user is found, update the user details
             if "name" in name:

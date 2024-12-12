@@ -62,7 +62,7 @@ def user_id():
 
     # If no match is found after the loop, return an error message
     else:
-        return jsonify({"Error": f"User with {user_id} does not exist"})
+        return jsonify({"Error": f"User with ID-{user_id} does not exist"})
 
 
 @app.route('/v1/users/teams', methods=['GET'])       # Endpoint to retrieve users by their team code.
@@ -70,7 +70,7 @@ def user_team():
     user_team = request.args.get('team')
     
     if not user_team:
-        return jsonify({"error": "No user team provided"})
+        return jsonify({"error": "No team provided"})
 
     # Fetch all user data
     users_data = database.child("Users").get()
@@ -90,21 +90,22 @@ def user_team():
         return jsonify({"Error": f"No team with {user_team} code found"})
 
     
-@app.route('/v1/users/new_users', methods=["POST"])      # Endpoint to create a new user.
+@app.route('/v1/users/new_users', methods=["GET"])      # Endpoint to create a new user.
 def new_user():
-    # Retrieve JSON data from the request
-    data = request.get_json()
+    # Retrieve data from the request
+    name = request.args.get('name')
+    age = request.args.get('age')
+    team = request.args.get('team')
 
     # Define the required fields for creating a new user
-    required_fields = ["name", "age", "team"]
+    required_fields = {"name":name, "age":age, "team":team}
     
     # Initialize a list to track any missing fields
     missing_fields = []
     
-    # Check for each required field in the incoming data
-    for field in required_fields:
-        if field not in data:
-            missing_fields.append(field)  # Add missing fields to the list
+    for key, value in required_fields.items():
+        if not value:     # Check if the value for a field is missing or empty
+            missing_fields.append(key)  # Add the missing field to the list
     
     # If there are any missing fields, return an error message
     if missing_fields:
@@ -113,11 +114,6 @@ def new_user():
         return jsonify({
             "error": f"Cannot create user as following attributes are missing: {missing_fields_str}"
         })
-    
-    # Extract user details from the data (known as request body)
-    name = data["name"]
-    age = int(data["age"])
-    team = data["team"]
     
     # Generate a unique user ID using UUID
     user_id = str(uuid.uuid4())
@@ -136,31 +132,26 @@ def new_user():
     # Return a success message
     return f"User added successfully with id {user_id}"
 
-@app.route('/v1/users/update_users', methods=["PUT"])      # Endpoint to update an existing user.
+@app.route('/v1/users/update_users', methods=["GET"])      # Endpoint to update an existing user.
 def update_user():
-    # Retrieve JSON data from the request
-    data = request.get_json()
-    
-    # Get the user ID from the query parameters
+    # Retrieve data from the request
+    name = request.args.get('name')
+    age = request.args.get('age')
+    team = request.args.get('team')
     user_id = request.args.get('id')
 
-    # "get" used as then no need for all inputs necessary (known as request body)
-    name = data.get("name")
-    age = data.get("age")
-    team = data.get("team")
-
     # Update user details if provided in the incoming data
-    if "name" in data:
+    if "name" in name:
         database.child("Users").child(user_id).update({"name" : name})
-    if "age" in data:
+    if "age" in age:
         database.child("Users").child(user_id).update({"age" : age})
-    if "team" in data:
+    if "team" in team:
         database.child("Users").child(user_id).update({"team" : team}) 
 
     # Return a success message
     return "User updated successfully"
 
-@app.route('/v1/users/delete_users', methods=["DELETE"])
+@app.route('/v1/users/delete_users', methods=["GET"])
 def delete_user():
     # Retrieve the user ID from the query parameters of the request
     user_id = request.args.get("id")

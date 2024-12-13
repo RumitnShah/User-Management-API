@@ -138,24 +138,25 @@ def update_user():
     if not user_id:
         return jsonify({"error": "Missing required parameter: 'id'"})
     
-    user_data = database.child("Users").child(user_id).get().val()
-    if not user_data:
-        return jsonify({"error": "User not found"})
+    try:
+        name = request.args.get('name') 
+        age = request.args.get('age')
+        team = request.args.get('team')
 
-    name = request.args.get('name') 
-    age = int(request.args.get('age'))
-    team = request.args.get('team')
+    except Exception as e:
+    # Check if at least one field is provided for the update
+        return jsonify({"error": "No valid fields provided for update. Use 'name', 'age', or 'team'"})
     
-    # Loop through users to find the matching user_id
-    for user in user_data.each():
-        if user.key() == user_id:
-            # If user is found, update the user details
-            if "name" in name:
-                database.child("Users").child(user_id).update({"name" : name})
-            if "age" in age:
-                database.child("Users").child(user_id).update({"age" : age})
-            if "team" in team:
-                database.child("Users").child(user_id).update({"team" : team})   
+    # Include provided fields in the update dictionary
+    if name:
+            database.child("Users").child(user_id).update({"name" : name})
+    if age:
+            try:
+                database.child("Users").child(user_id).update({"age" : int(age)})
+            except ValueError:
+                return jsonify({"error": "'age' must be a valid integer"})
+    if team:
+            database.child("Users").child(user_id).update({"team" : team})
 
     # Return a success message
     return "User updated successfully"

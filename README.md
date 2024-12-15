@@ -42,12 +42,15 @@ On Windows: 'venv\Scripts\activate'
 
 4. Add a New User
     - Endpoint: /v1/users/new_users?name=<name>&age=<age>&team=<team>
-    - Method: GET
+    - Method: GET, POST
 
 5. Update an Existing User
     - Endpoint: /v1/users/update_users?id=<user_id>&name=<name>&age=<age>&team=<team>
-    - Method: GET
+    - Method: GET, PUT
 
 6. Delete a User
     - Endpoint: /v1/users/delete_users?id=<user_id>
-    - Method: GET
+    - Method: GET, DELETE
+
+# Note
+- Write in JSON Body if using any API testing platform

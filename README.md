@@ -33,24 +33,30 @@ On Windows: 'venv\Scripts\activate'
     - Method: GET
 
 2. Retrieve User by ID
-    - Endpoint: /v1/users/ids?id=<user_id>
+    - Endpoint: https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/ids?id=<user_id>
     - Method: GET
 
 3. Retrieve Users by Team Code
-    - Endpoint: /v1/users/teams?team=<team_code>
+    - Endpoint: https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/teams?team=<team_code>
     - Method: GET
 
 4. Add a New User
-    - Endpoint: /v1/users/new_users?name=<name>&age=<age>&team=<team>
-    - Method: GET, POST
+    - Endpoint: https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/new_users?name=<name>&age=<age>&team=<team>
+    - Method: POST
 
 5. Update an Existing User
-    - Endpoint: /v1/users/update_users?id=<user_id>&name=<name>&age=<age>&team=<team>
-    - Method: GET, PUT
+    - Endpoint: https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/update_users?id=<user_id>&name=<name>&age=<age>&team=<team>
+    - Method: PUT
 
 6. Delete a User
-    - Endpoint: /v1/users/delete_users?id=<user_id>
-    - Method: GET, DELETE
+    - Endpoint: https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/delete_users?id=<user_id>
+    - Method: DELETE
 
 # Note
 - Write in JSON Body if using any API testing platform
+Example JSON Format
+{
+    "name" : "xyz"
+    "age" : 20
+    "team" : "code"
+}

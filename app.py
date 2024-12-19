@@ -47,7 +47,6 @@ def Users():
 @app.route('/v1/users/ids', methods=['GET'])     # Endpoint to retrieve a user by their ID.
 def user_id():
     user_id = request.args.get('id')
-    
     if not user_id:
         return jsonify({"error": "No user ID provided"})
 
@@ -218,6 +217,8 @@ def update_user():
 
         # Get the user ID from the query parameters
         user_id = request.args.get('id')
+        if not user_id:
+            return jsonify({"error": "Missing required parameter: 'id'"})
 
         # "get" used as then no need for all inputs necessary (known as request body)
         name = data.get("name")
@@ -240,7 +241,9 @@ def update_user():
 @app.route('/v1/users/delete_users', methods=["GET", "DELETE"])   # Endpoint to delete a user by their ID.
 def delete_user():
     # Retrieve the user ID from the query parameters of the request
-    user_id = request.args.get("id")
+    user_id = request.args.get('id')
+    if not user_id:
+        return jsonify({"error": "Missing required parameter: 'id'"})
 
     # Fetch all user data from the "Users" node
     users_data = database.child("Users").get()

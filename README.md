@@ -18,13 +18,24 @@ This project is a Flask-based RESTful API for managing user data stored in Fireb
 1. Clone the given Repository
 
 2. Set Up a Virtual Environment (recommended)
-'python -m venv venv'
-On Windows: 'venv\Scripts\activate'
+```bash
+python -m venv venv
+```
+3. Activate Virtual Environment 
+```bash
+On Windows: venv\Scripts\activate
+On macOS: source venv/bin/activate
+```
+4. Configure the Environment File
+    - Locate the .example.env file in the repository.
+    - Rename it to .env.
+    - Add the required API keys obtained from the respective database to the .env file.
 
-3. Install Dependencies
-'pip install -r requirements.txt'
-
-4. Run the application
+5. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+6. Run the application
 
 ## Testing the API
 
@@ -54,9 +65,5 @@ On Windows: 'venv\Scripts\activate'
 
 ## Note
 - Write in JSON Body if using any API testing platform
-Example JSON Format
-{
-    "name" : "xyz"
-    "age" : 20
-    "team" : "code"
-}
+- Example JSON Format                                                                                                        
+  <img width="116" alt="api" src="https://github.com/user-attachments/assets/5c9475e9-b8c6-457e-947e-c3e3df60e9e8" />

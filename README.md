@@ -26,11 +26,16 @@ python -m venv venv
 On Windows: venv\Scripts\activate
 On macOS: source venv/bin/activate
 ```
-4. Install Dependencies
+4. Configure the Environment File
+- Locate the ```.example.env``` file in the repository.
+- Rename it to ```.env```.
+- Add the required API keys obtained from the respective database to ```.env``` file.
+
+5. Install Dependencies
 ```bash
-'pip install -r requirements.txt'
+pip install -r requirements.txt
 ```
-5. Run the application
+6. Run the application
 
 ## Testing the API
 

@@ -91,152 +91,80 @@ def user_team():
     
 @app.route('/v1/users/new_users', methods=["GET", "POST"])      # Endpoint to create a new user.
 def new_user():
-    if request.method == "GET":
-        # Retrieve data from the request
-        name = request.args.get('name')
-        age = request.args.get('age')
-        team = request.args.get('team')
+    data = request.get_json()
 
-        # Define the required fields for creating a new user
-        required_fields = {"name":name, "age":age, "team":team}
-        
-        # Initialize a list to track any missing fields
-        missing_fields = []
-        
-        for key, value in required_fields.items():
-            if not value:     # Check if the value for a field is missing or empty
-                missing_fields.append(key)  # Add the missing field to the list
-        
-        # If there are any missing fields, return an error message
-        if missing_fields:
-            # Create a string of missing fields for the error message
-            missing_fields_str = ", ".join(missing_fields)
-            return jsonify({
-                "error": f"Cannot create user as following attributes are missing: {missing_fields_str}"
-            })
-        
-        # Generate a unique user ID using UUID
-        user_id = str(uuid.uuid4())
-        
-        # Create a new user dictionary with the extracted details
-        new_user = {
-            "id": user_id,
-            "name": name,
-            "age": age,
-            "team": team
-        }
+    # Define the required fields for creating a new user
+    required_fields = ["name", "age", "team"]
 
-        # Add user's data in the "Users" node with the given user_id
-        database.child("Users").child(user_id).set(new_user)
+    # Initialize a list to track any missing fields
+    missing_fields = []
 
-        # Return a success message
-        return f"User added successfully with id {user_id}"
-    
-    if request.method == "POST":
-        data = request.get_json()
+    # Check for each required field in the incoming data
+    for field in required_fields:
+        if field not in data:
+            missing_fields.append(field)  # Add missing fields to the list
 
-        # Define the required fields for creating a new user
-        required_fields = ["name", "age", "team"]
-
-        # Initialize a list to track any missing fields
-        missing_fields = []
-
-        # Check for each required field in the incoming data
-        for field in required_fields:
-            if field not in data:
-                missing_fields.append(field)  # Add missing fields to the list
-
-        # If there are any missing fields, return an error message
-        if missing_fields:
-            # Create a string of missing fields for the error message
-            missing_fields_str = ", ".join(missing_fields)
-            return jsonify({
+    # If there are any missing fields, return an error message
+    if missing_fields:
+        # Create a string of missing fields for the error message
+        missing_fields_str = ", ".join(missing_fields)
+        return jsonify({
                 "error": f"Cannot create user as following attributes are missing: {missing_fields_str}"
             })
 
-        # Extract user details from the data (known as request body)
-        name = data["name"]
-        try:             # Validate age field
-            age = int(data["age"])
-        except ValueError:
-            return jsonify({"error": "Invalid value for 'age'. It must be a positive integer."})
+    # Extract user details from the data (known as request body)
+    name = data["name"]
+    try:             # Validate age field
+        age = int(data["age"])
+    except ValueError:
+        return jsonify({"error": "Invalid value for 'age'. It must be a positive integer."})
 
-        team = data["team"]
+    team = data["team"]
 
-        # Generate a unique user ID using UUID
-        user_id = str(uuid.uuid4())
+    # Generate a unique user ID using UUID
+    user_id = str(uuid.uuid4())
 
-        # Create a new user dictionary with the extracted details
-        new_user = {
-            "id": user_id,
-            "name": name,
-            "age": age,
-            "team": team
-        }
+    # Create a new user dictionary with the extracted details
+    new_user = {
+        "id": user_id,
+        "name": name,
+        "age": age,
+        "team": team
+    }
 
-        # Add user's data in the "Users" node with the given user_id
-        database.child("Users").child(user_id).set(new_user)
+    # Add user's data in the "Users" node with the given user_id
+    database.child("Users").child(user_id).set(new_user)
 
-        # Return a success message
-        return f"User added successfully with id {user_id}"
+    # Return a success message
+    return f"User added successfully with id {user_id}"
 
 @app.route('/v1/users/update_users', methods=["GET", "PUT"])      # Endpoint to update an existing user.
 def update_user():
-    if request.method == "GET":
+    # Retrieve JSON data from the request
+    data = request.get_json()
 
-        user_id = request.args.get('id')
-        if not user_id:
-            return jsonify({"error": "Missing required parameter: 'id'"})
-        
-        try:
-            name = request.args.get('name') 
-            age = request.args.get('age')
-            team = request.args.get('team')
+    # Get the user ID from the query parameters
+    user_id = request.args.get('id')
+    if not user_id:
+        return jsonify({"error": "Missing required parameter: 'id'"})
 
-        except Exception as e:
-        # Check if at least one field is provided for the update
-            return jsonify({"error": "No valid fields provided for update. Use 'name', 'age', or 'team'"})
-        
-        # Include provided fields in the update dictionary
-        if name:
-                database.child("Users").child(user_id).update({"name" : name})
-        if age:
-                try:
-                    database.child("Users").child(user_id).update({"age" : int(age)})
-                except ValueError:
-                    return jsonify({"error": "'age' must be a valid integer"})
-        if team:
-                database.child("Users").child(user_id).update({"team" : team})
+    # "get" used as then no need for all inputs necessary (known as request body)
+    name = data.get("name")
+    age = data.get("age")
+    team = data.get("team")
 
-        # Return a success message
-        return "User updated successfully"
-    
-    elif request.method == "PUT":
-        # Retrieve JSON data from the request
-        data = request.get_json()
+    # Update user details if provided in the incoming data
+    if "name" in data:
+        database.child("Users").child(user_id).update({"name" : name})
 
-        # Get the user ID from the query parameters
-        user_id = request.args.get('id')
-        if not user_id:
-            return jsonify({"error": "Missing required parameter: 'id'"})
-
-        # "get" used as then no need for all inputs necessary (known as request body)
-        name = data.get("name")
-        age = data.get("age")
-        team = data.get("team")
-
-        # Update user details if provided in the incoming data
-        if "name" in data:
-            database.child("Users").child(user_id).update({"name" : name})
-
-        if "age" in data:
-            database.child("Users").child(user_id).update({"age" : age})
+    if "age" in data:
+        database.child("Users").child(user_id).update({"age" : age})
             
-        if "team" in data:
-            database.child("Users").child(user_id).update({"team" : team}) 
+    if "team" in data:
+        database.child("Users").child(user_id).update({"team" : team}) 
 
-        # Return a success message
-        return "User updated successfully"
+    # Return a success message
+    return "User updated successfully"
 
 @app.route('/v1/users/delete_users', methods=["GET", "DELETE"])   # Endpoint to delete a user by their ID.
 def delete_user():

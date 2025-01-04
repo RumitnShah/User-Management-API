@@ -52,11 +52,11 @@ pip install -r requirements.txt
     - Method: GET
 
 4. Add a New User
-    - Endpoint: ``` https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/new_users?name=<name>&age=<age>&team=<team> ```
+    - Endpoint: ``` https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/new_users ```
     - Method: POST
 
 5. Update an Existing User
-    - Endpoint: ``` https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/update_users?id=<user_id>&name=<name>&age=<age>&team=<team> ```
+    - Endpoint: ``` https://user-management-api1-7c09c950be6a.herokuapp.com/v1/users/update_users?id=<user_id> ```
     - Method: PUT
 
 6. Delete a User

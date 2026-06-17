@@ -23,7 +23,27 @@ database = firebase.database()
 
 app = Flask(__name__)
 
-@app.route('/v1/users', methods=['GET'])     # Endpoint to retrieve all users from the database.
+@app.route('/')
+def home():
+    return """
+    <h1>User Management API</h1>
+
+    <p>
+        Welcome to the landing page of the User Management API.
+    </p>
+
+    <p>
+        Please refer to the <a href="https://github.com/RumitnShah/User-Management-API/blob/main/README.md">README</a> documentation for details about
+        the available endpoints and their usage.
+    </p>
+
+    <p>
+        You can test the API endpoints according to your requirements using
+        Postman, curl, Swagger or any HTTP client.
+    </p>
+    """
+
+@app.route('/users', methods=['GET'])     # Endpoint to retrieve all users from the database.
 def Users():
     
     # Fetch all data from the "Users" node in the Firebase Realtime Database
@@ -44,7 +64,7 @@ def Users():
     return jsonify(user_list)
 
 
-@app.route('/v1/users/ids', methods=['GET'])     # Endpoint to retrieve a user by their ID.
+@app.route('/users/ids', methods=['GET'])     # Endpoint to retrieve a user by their ID.
 def user_id():
     user_id = request.args.get('id')
     if not user_id:
@@ -64,7 +84,7 @@ def user_id():
         return jsonify({"Error": f"User with ID-{user_id} does not exist"})
 
 
-@app.route('/v1/users/teams', methods=['GET'])       # Endpoint to retrieve users by their team code.
+@app.route('/users/teams', methods=['GET'])       # Endpoint to retrieve users by their team code.
 def user_team():
     user_team = request.args.get('team')
     
@@ -89,7 +109,7 @@ def user_team():
         return jsonify({"Error": f"No team with {user_team} code found"})
 
     
-@app.route('/v1/users/new_users', methods=["GET", "POST"])      # Endpoint to create a new user.
+@app.route('/users/new_users', methods=["GET", "POST"])      # Endpoint to create a new user.
 def new_user():
     data = request.get_json()
 
@@ -138,7 +158,7 @@ def new_user():
     # Return a success message
     return f"User added successfully with id {user_id}"
 
-@app.route('/v1/users/update_users', methods=["GET", "PUT"])      # Endpoint to update an existing user.
+@app.route('/users/update_users', methods=["GET", "PUT"])      # Endpoint to update an existing user.
 def update_user():
     # Retrieve JSON data from the request
     data = request.get_json()
@@ -166,7 +186,7 @@ def update_user():
     # Return a success message
     return "User updated successfully"
 
-@app.route('/v1/users/delete_users', methods=["GET", "DELETE"])   # Endpoint to delete a user by their ID.
+@app.route('/users/delete_users', methods=["GET", "DELETE"])   # Endpoint to delete a user by their ID.
 def delete_user():
     # Retrieve the user ID from the query parameters of the request
     user_id = request.args.get('id')

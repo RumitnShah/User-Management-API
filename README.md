@@ -40,27 +40,27 @@ pip install -r requirements.txt
 ## Testing the API
 
 1. Retrieve All Users
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users ```
     - Method: GET
 
 2. Retrieve User by ID
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users/ids?id=<user_id> ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users/ids?id=<user_id> ```
     - Method: GET
 
 3. Retrieve Users by Team Code
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users/teams?team=<team_code> ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users/teams?team=<team_code> ```
     - Method: GET
 
 4. Add a New User
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users/new_users ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users/new_users ```
     - Method: POST
 
 5. Update an Existing User
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users/update_users?id=<user_id> ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users/update_users?id=<user_id> ```
     - Method: PUT
 
 6. Delete a User
-    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/v1/users/delete_users?id=<user_id> ```
+    - Endpoint: ``` https://user-management-api-u7ck.onrender.com/users/delete_users?id=<user_id> ```
     - Method: DELETE
 
 ## Note
